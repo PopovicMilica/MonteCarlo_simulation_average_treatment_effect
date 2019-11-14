@@ -1164,7 +1164,7 @@ def doubly_robust_estimator(mu0_pred, tau_pred, Y, T, prob_t_pred):
             Treatment array.
         prob_t_pred: ndarray, shape=(N,)
             Estimated propensity scores.
-        Outputs:
+    Outputs:
     -------
         psi_0: ndarray, shape=(N, 1)
             Estimated target value given x in case of no treatment.
@@ -1179,11 +1179,10 @@ def doubly_robust_estimator(mu0_pred, tau_pred, Y, T, prob_t_pred):
         prob_t_pred[prob_t_pred == 1] = 0.999
         psi_0 = (first_part/(1-prob_t_pred)) + mu0_pred
         psi_1 = (second_part/prob_t_pred) + mu0_pred + tau_pred
-        return psi_0, psi_1
     else:
         psi_0 = (first_part/(1-np.mean(T))) + mu0_pred
         psi_1 = (second_part/np.mean(T)) + mu0_pred + tau_pred
-        return psi_0, psi_1
+    return psi_0, psi_1
 
 
 def update_model_comparison_file(name, model_info, cols):

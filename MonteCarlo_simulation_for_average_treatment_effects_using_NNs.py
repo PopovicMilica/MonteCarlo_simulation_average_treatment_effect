@@ -1428,7 +1428,7 @@ def main():
                 'total_nparameters', 'total_nparameters_t', 'Loss best',
                 'Loss best_treatment', 'Mean mu0_pred', 'Std mu0_pred',
                 'Mean mu0_real', 'Std mu0_real', 'Mean tau_pred',
-                'Std tau_pred', 'Mean_tau_real', 'Std tau_real',
+                'Std tau_pred', 'Mean tau_real', 'Std tau_real',
                 'tau_true_mean', 'Mean_prob_t_pred', 'Mean prob_of_t_real',
                 'mean_T_real', 'Y_real_mean', 'Y_pred_mean', 'CI_lower_bound',
                 'CI_upper_bound', 'psi_0_mean', 'psi_1_mean',

@@ -2,7 +2,7 @@
 
 This is the code for a Monte Carlo simulation used to support findings of Farrell, M.H., Liang, T. and Misra, S., 2019: ``Deep neural networks for estimation and inference'', arXiv preprint arXiv:1809.09953.
 
-This code first creates an artificial dataset according to a Data Generating Process (DGP). Next, it generates a neural network with a prescribed architecture that estimates treatment effect coefficients and, in the case when treatment is not randomized, it also creates a neural network that estimates propensity scores. These neural networks are then trained and their outputs are fed to influence functions which estimates are used to build 95% confidence intervals for the average treatment effect. Next, the code checks whether the true average treatment effect of the artificial dataset is contained within the estimated confidence interval. Finally, each run of the model is appended to a summary .csv file that contains information about all the relevant statistics recorded during the run.
+This code first creates an artificial dataset according to a Data Generating Process (DGP). Next, it generates a neural network with a prescribed architecture that estimates treatment effect coefficients and, in the case when treatment is not randomized, it also creates a neural network that estimates propensity scores. These neural networks are then trained and their outputs are fed to influence functions which estimates are used to build 95% confidence interval for average treatment effect. Next, the code checks whether the true average treatment effect of the artificial dataset is contained within the estimated confidence interval. Finally, each run of the model is appended to a summary .csv file that contains information about all the relevant statistics recorded during the run.
 
 ### Installing the dependencies for the code
 
@@ -12,11 +12,11 @@ Create a new virtual environment:
 ```sh
 conda create --name=name_of_the_environment python=3.6.8
 ```
-Activate new virtual environment
+Activate new virtual environment:
 ```sh
 conda activate name_of_the_environment
 ```
-Next, cd to the directory with files from this repository.
+Next, download the files from this repository to your computer and from your terminal cd to the directory that contains them.
 ```sh
 cd path/to/files
 ```
@@ -24,7 +24,7 @@ Install all the libraries needed to run the code:
 ```sh
 pip install -r requirements.txt
 ```
-Now that all the necessary dependencies are installed, you can run the main Python code. See Usage section below.
+Now that all the necessary dependencies are installed, you can run the main Python code(see `Usage` section below).
 When you are done, you can exit the virtual environment by typing:
 ```sh
 conda deactivate

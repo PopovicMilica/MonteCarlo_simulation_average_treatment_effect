@@ -48,7 +48,8 @@ deactivate
 ```
 
 ## Usage
-Once you have created the virtual environment and installed the necessary libraries, you can interact with the code, by running the following command.
+Once you have created the virtual environment and installed the necessary libraries, you can interact with the code, by running the following command:
+
 ```sh
 python MonteCarlo_simulation_for_average_treatment_effects_using_NNs.py
 ```

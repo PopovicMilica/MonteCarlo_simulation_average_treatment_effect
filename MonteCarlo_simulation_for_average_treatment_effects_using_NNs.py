@@ -2,11 +2,10 @@
 # MonteCarlo_simulation_average_treatment_effects_using_NNs.py
 # -----------------------------------------------------------------
 # Date: November 2018
-# Last modified: November 2019
+# Last modified: July 2020
 # This is the Python code for a Monte Carlo simulation used to support
-# findings of Farrell, M.H., Liang, T. and Misra, S., 2018:
-# 'Deep neural networks for estimation and inference: Application
-# to causal effects and other semiparametric estimands',
+# findings of Farrell, M.H., Liang, T. and Misra, S., 2019:
+# 'Deep neural networks for estimation and inference',
 # arXiv preprint arXiv:1809.09953.
 # ------------------------------------------------------------------
 
@@ -1145,7 +1144,7 @@ class NeuralNetwork():
         return self._training_the_NN(estimating_TE=False)
 
 
-def doubly_robust_estimator(mu0_pred, tau_pred, Y, T, prob_t_pred):
+def influence_functions(mu0_pred, tau_pred, Y, T, prob_t_pred):
     '''
     Calculate the target value for each individual when treatment is
     0 or 1.
@@ -1164,16 +1163,16 @@ def doubly_robust_estimator(mu0_pred, tau_pred, Y, T, prob_t_pred):
     Outputs:
     -------
         psi_0: ndarray, shape=(N, 1)
-            Estimated target value given x in case of no treatment.
+            Influence function for given x in case of no treatment.
         psi_1: ndarray, shape=(N, 1)
-            Estimated target value given x in case of treatment.
+            Influence function for given x in case of treatment.
     '''
     first_part = (1-T) * (Y-mu0_pred)
     second_part = T * (Y-mu0_pred-tau_pred)
 
     if FLAGS.treatment == 'not_random':
-        prob_t_pred[prob_t_pred == 0] = 0.001
-        prob_t_pred[prob_t_pred == 1] = 0.999
+        prob_t_pred[prob_t_pred < 0.0001] = 0.0001
+        prob_t_pred[prob_t_pred > 0.9999] = 0.9999
         psi_0 = (first_part/(1-prob_t_pred)) + mu0_pred
         psi_1 = (second_part/prob_t_pred) + mu0_pred + tau_pred
     else:
@@ -1336,11 +1335,11 @@ def main():
         ])
 
         if FLAGS.treatment == 'not_random':
-            psi_0, psi_1 = doubly_robust_estimator(mu0_pred, tau_pred, Y,
-                                                   T_real, prob_of_t_pred)
+            psi_0, psi_1 = influence_functions(mu0_pred, tau_pred, Y,
+                                               T_real, prob_of_t_pred)
         else:
-            psi_0, psi_1 = doubly_robust_estimator(mu0_pred, tau_pred, Y,
-                                                   T_real, prob_t_pred=None)
+            psi_0, psi_1 = influence_functions(mu0_pred, tau_pred, Y,
+                                               T_real, prob_t_pred=None)
 
         # Calculating confidence interval for average treatment effect
         mean_diff_psi1_psi0 = np.mean(psi_1 - psi_0)

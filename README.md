@@ -38,7 +38,7 @@ conda deactivate
 
 **With Linux/Mac:**
 
-The steps to install the dependencies on Linux/Mac if you don't have Anaconda distribution are analogous to Anaconda installation:
+The steps to install the dependencies on Linux/Mac, if you don't have Anaconda distribution, are analogous to Anaconda installation:
 ```sh
 virtualenv --system-site-packages -p python3 ./name_of_the_environment
 source ./name_of_the_environment/bin/activate

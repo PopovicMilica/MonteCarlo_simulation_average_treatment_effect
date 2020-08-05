@@ -623,9 +623,9 @@ def plotting_loss_functions(loss1, loss2=[], add_title=''):
     Inputs:
     -------
         loss1: list of floats
-            First list of recorded loss through epochs.
+            First list of recorded losses through epochs.
         loss2: list of floats
-            Second list of recorded loss through epochs.
+            Second list of recorded losses through epochs.
         add_title: string
             Addition to the title of the graph.
     '''
@@ -634,12 +634,12 @@ def plotting_loss_functions(loss1, loss2=[], add_title=''):
     plt.plot(range(len(loss1)), loss1, 'r-', lw=3)
     if early_stopping:
         plt.plot(range(len(loss2)), loss2, 'b-', lw=3)
-        plt.legend(['loss on training set with regularization',
+        plt.legend(['loss on training set',
                     'loss on validation set'])
         plt.title('Loss on training and validation set' + add_title,
                   fontsize=14)
     else:
-        plt.legend(['loss on training set with regularization'])
+        plt.legend(['loss on training set'])
         plt.title('Loss on training set' + add_title, fontsize=14)
     plt.xlabel('Epoch number', fontsize=14)
     plt.ylabel('Loss', fontsize=14)
@@ -1015,11 +1015,10 @@ class NeuralNetwork():
         epoch_without_change = 0
         break_cond = False
 
-        loss_training_set_with_regularization = []
-        loss_training_set = []
+        loss_train_list = []
         rest = []
         if early_stopping:
-            loss_validation_set = []
+            loss_validation_list = []
             validation_loss_min = 10e6
             feed_dict_valid = {
                 x: X_valid,
@@ -1028,7 +1027,7 @@ class NeuralNetwork():
                 dropout_rates: dropout_rates_test
             }
         else:
-            loss_whole_set = []
+            loss_whole_list = []
 
         feed_dict_total = {
             x: X,
@@ -1039,11 +1038,11 @@ class NeuralNetwork():
 
         for i in range(self.max_nepochs):
             if early_stopping:
-                loss_valid = loss.eval(feed_dict=feed_dict_valid)
-                loss_validation_set.append(loss_valid)
+                loss_valid = total_loss.eval(feed_dict=feed_dict_valid)
+                loss_validation_list.append(loss_valid)
             else:
-                loss_whole = loss.eval(feed_dict=feed_dict_total)
-                loss_whole_set.append(loss_whole)
+                loss_whole = total_loss.eval(feed_dict=feed_dict_total)
+                loss_whole_list.append(loss_whole)
 
             if early_stopping:
                 if validation_loss_min > loss_valid:
@@ -1065,12 +1064,10 @@ class NeuralNetwork():
                     y: y_batch,
                     dropout_rates: self.dropout_rates_train
                 }
-                loss_with_regularization_train, loss_train = \
-                    sess.run([total_loss, loss], feed_dict=feed_dict_train)
+                loss_train = sess.run(total_loss, feed_dict=feed_dict_train)
                 if s == 0:
-                    loss_training_set.append(loss_train)
-                    loss_training_set_with_regularization.append(
-                        loss_with_regularization_train)
+                    loss_train_list.append(loss_train)
+
                 if epoch_without_change > max_epochs_without_change:
                     break_cond = True
                     break
@@ -1089,7 +1086,7 @@ class NeuralNetwork():
             # Check the stopping condition
             if break_cond:
                 if FLAGS.verbose:
-                    print('Finished with training! ', end='')
+                    print('Training is finished! ', end='')
                     print('Best validation loss achieved at %d epoch'
                           % epoch_best)
                 break
@@ -1098,10 +1095,10 @@ class NeuralNetwork():
             output_best = output.eval(feed_dict=feed_dict_total)
             epoch_best = i + 1
             best_loss = loss_whole
-            loss_set = loss_whole_set
+            loss_list = loss_whole_list
         else:
             best_loss = validation_loss_min
-            loss_set = loss_validation_set
+            loss_list = loss_validation_list
 
         # Num of N parameters
         total_nparameters = np.sum([
@@ -1115,12 +1112,12 @@ class NeuralNetwork():
             else:
                 add_title = ' - second NN'
 
-            # If train_proportion less than 1, than loss set represents
+            # If train_proportion less than 1, than loss_list represents
             # list of losses on validation set after each epoch. If
             # train_proportion = 1, then it is list of losses on whole
             # dataset after each epoch.
             plotting_loss_functions(
-                loss_training_set_with_regularization, loss_set, add_title)
+                loss_train_list, loss_list, add_title)
 
         # Close tf.InteractiveSession
         sess.close()
@@ -1222,7 +1219,7 @@ def main():
     print('Running Monte Carlo simulations for the following case:')
     print('* %s treatment' % FLAGS.treatment)
     print('* %s model' % FLAGS.model)
-    print('* %s num of consumer characteristics'
+    print('* %s consumer characteristics'
           % FLAGS.nconsumer_characteristics, '\n')
     print('Using the following NN architectures:')
     print('First NN hidden layer sizes: ', hidden_layer_sizes)
@@ -1268,7 +1265,7 @@ def main():
         # ------------- Building and training the first NN -----------
 
         if FLAGS.verbose:
-            print('\nTraining the NN that outputs treatment coefficients!')
+            print('\nTraining of treatment coefficients neural network:')
         first_NN = NeuralNetwork(
             hidden_layer_sizes, activation_functions, dropout_rates_train,
             batch_size_, 2)
@@ -1287,7 +1284,7 @@ def main():
             np.random.seed(61)
 
             if FLAGS.verbose:
-                print('\nTraining the NN that outputs propensity scores!')
+                print('\nTraining of propensity score neural network:')
             second_NN = NeuralNetwork(
                 hidden_layer_sizes_treatment, activation_functions_treatment,
                 dropout_rates_train_treatment, batch_size_t_, 1)
@@ -1462,10 +1459,9 @@ def main():
         print(model_data)
         print('%d out of %d simulations contain tau_true_mean in the CI'
               % (np.sum(model_data['in_interval']), len(model_data)))
+        print('Name of the file:', name)
     else:
-        print('Requested .csv file not found!')
-
-    print('Name of the file:', name)
+        print('File `' + name + '` is not yet created.')
 
     # Plot all the graphs
     plt.show()

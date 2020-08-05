@@ -8,11 +8,11 @@ This code first creates an artificial dataset according to a Data Generating Pro
 
 **With Anaconda:**
 
-Create a new virtual environment:
+First, create a new virtual environment:
 ```sh
 conda create --name=name_of_the_environment python=3.6.8
 ```
-Activate new virtual environment:
+Then, activate new virtual environment:
 ```sh
 conda activate name_of_the_environment
 ```
@@ -20,7 +20,7 @@ Next, download the files from this repository to your computer and from your ter
 ```sh
 cd path/to/files
 ```
-Install all the libraries needed to run the code:
+Finally, install all the libraries needed to run the code:
 ```sh
 pip install -r requirements.txt
 ```
